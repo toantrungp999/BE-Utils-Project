@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Utils.Persistence.Extensions
+namespace Utils.CrossCuttingConcerns.Extensions
 {
     public static class JsonExtension
 	{
 		/// <summary>
 		/// Parse an json to an object or default.
 		/// </summary>
-		public static T ToObject<T>(this string json)
+		public static T? ToObject<T>(this string json)
 		{
 			var test = json.IsValidJson()
                 ? JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings())
@@ -21,7 +21,7 @@ namespace Utils.Persistence.Extensions
 		/// <summary>
 		/// Try parse and output a result. Otherwise, return false.
 		/// </summary>
-		public static bool TryParse<T>(this string json, out T result)
+		public static bool TryParse<T>(this string json, out T? result)
 		{
 			result = default;
 

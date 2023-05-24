@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Utils.Infrastructure.Constants;
+using Utils.CrossCuttingConcerns.Constants;
 
 namespace Utils.WebAPI.Configurations
 {

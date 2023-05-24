@@ -1,9 +1,9 @@
 ﻿using Utils.CrossCuttingConcerns.Exceptions;
-using Utils.Infrastructure.Constants;
 using System.Net;
 using Newtonsoft.Json;
 using System;
 using Utils.WebAPI.Responses;
+using Utils.CrossCuttingConcerns.Constants;
 
 namespace Utils.WebAPI.Configurations.Middlewares
 {

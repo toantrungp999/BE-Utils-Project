@@ -1,6 +1,5 @@
 ﻿using Utils.CrossCuttingConcerns.OS;
 using Utils.Infrastructure.HostedServices;
-using Utils.Infrastructure.HostedServices.Interfaces;
 using Utils.Infrastructure.OS;
 using Microsoft.Extensions.DependencyInjection;
 

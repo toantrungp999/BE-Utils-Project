@@ -1,4 +1,4 @@
-﻿using Utils.Infrastructure.Constants;
+﻿using Utils.CrossCuttingConcerns.Constants;
 
 namespace Utils.WebAPI.Configurations
 {

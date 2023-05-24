@@ -1,8 +1,6 @@
 using Utils.Application.Services.Interfaces;
 using Utils.Infrastructure.HostedServices;
-using Utils.Infrastructure.HostedServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace Utils.WebAPI.Controllers
 {

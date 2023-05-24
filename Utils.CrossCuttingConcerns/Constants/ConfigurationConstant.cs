@@ -1,4 +1,4 @@
-﻿namespace Utils.Infrastructure.Constants
+﻿namespace Utils.CrossCuttingConcerns.Constants
 {
     public static class ConfigurationConstant
     {

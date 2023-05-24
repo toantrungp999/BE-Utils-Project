@@ -14,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Utils.Application\Utils.Application.csproj" />
+    <Folder Include="Web\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Web\" />
+    <ProjectReference Include="..\Utils.Application\Utils.Application.csproj" />
   </ItemGroup>
 
 </Project>

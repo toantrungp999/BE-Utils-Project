@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 using Utils.CrossCuttingConcerns.Constants;
-using Utils.Infrastructure.Constants;
+using Utils.CrossCuttingConcerns.Extensions;
 using Utils.Persistence.Extensions;
 using Utils.WebAPI.Responses;
 

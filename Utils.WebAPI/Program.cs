@@ -1,10 +1,5 @@
-using Utils.Application;
-using Utils.Infrastructure.Constants;
-using Utils.Infrastructure.Extensions;
-using Utils.Persistence.Contexts;
-using Utils.Persistence.Extensions;
 using Utils.WebAPI.Configurations;
-using System.Reflection;
+using Utils.CrossCuttingConcerns.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -17,10 +12,8 @@ builder.Services.AddSwaggerGen();
 
 // Add custom service to the container
 builder.Services.AllowCors(configuration);
-builder.Services.AddApplicationServices();
-builder.Services.AddPersistence(connectionString, typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name);
-builder.Services.AddDateTimeProvider();
-builder.Services.AddBackgroundService();
+builder.Services.ConfigureDi(configuration);
+builder.Services.ConfigureAutoMapper();
 
 
 builder.Services.AddMemoryCache(options =>
@@ -39,6 +32,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCustomResponseWrapper();
 app.UseGlobalExceptionHandler();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
