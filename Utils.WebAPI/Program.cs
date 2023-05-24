@@ -1,7 +1,6 @@
 using Utils.WebAPI.Configurations;
 using Utils.CrossCuttingConcerns.Constants;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using Utils.Application.Configurations;
 using Utils.CrossCuttingConcerns.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
