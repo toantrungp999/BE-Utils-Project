@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 using Utils.CrossCuttingConcerns.Constants;
 using Utils.CrossCuttingConcerns.Extensions;
 using Utils.Persistence.Extensions;
+using Utils.WebAPI.Extensions;
 using Utils.WebAPI.Responses;
 
 namespace Utils.WebAPI.Configurations
@@ -60,9 +60,8 @@ namespace Utils.WebAPI.Configurations
             var responseBody = httpContext.Response.Body;
             responseBody.Position = 0;
 
-            var apiVersion = httpContext.Features.Get<IApiVersioningFeature>()?.RequestedApiVersion;
             var bodyStr = await new StreamReader(responseBody).ReadToEndAsync();
-            var response = TransformResult(bodyStr, apiVersion, httpContext.Response.StatusCode);
+            var response = TransformResult(bodyStr, httpContext.Response.StatusCode);
 
             var buffer = Encoding.UTF8.GetBytes(response);
 
@@ -73,16 +72,13 @@ namespace Utils.WebAPI.Configurations
             }
         }
 
-        private string TransformResult(string result, ApiVersion apiVersion, int statusCode)
+        private string TransformResult(string result, int statusCode)
         {
             const int startedHttpErrorStatusCode = 400;
 
             var baseResponse = new BaseResponse
             {
                 IsSuccess = false,
-                ApiVersion = apiVersion != null
-                    ? $"{apiVersion.MajorVersion}.{apiVersion.MinorVersion ?? 0}"
-                    : ConfigurationConstant.DefaultApiVersion,
                 StatusCode = statusCode
             };
 

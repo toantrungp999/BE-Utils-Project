@@ -1,11 +1,12 @@
-﻿using Utils.Application;
-using Utils.BackgroundServer.ConfigurationOptions;
+﻿using Utils.BackgroundServer.ConfigurationOptions;
 using Utils.BackgroundServer.HostedServices;
 using Utils.Infrastructure.Extensions;
 using Utils.Persistence.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Utils.Application.Configurations;
+using Utils.CrossCuttingConcerns.Configurations;
 
 namespace Utils.BackgroundServer
 {
@@ -24,13 +25,14 @@ namespace Utils.BackgroundServer
                 var serviceProvider = services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
 
-                var appSettings = new AppSetting();
+                var appSettings = new AppSettings();
+
                 configuration.Bind(appSettings);
-                services.Configure<AppSetting>(configuration);
+                services.Configure<AppSettings>(configuration);
 
                 services.AddDateTimeProvider();
                 services.AddPersistence(appSettings.ConnectionStrings.DefaultConnection)
-                        .AddApplicationServices();
+                        .ConfigureServiceDi();
 
                 services.AddHostedService<ScheduleCronJobWorker>();
             });

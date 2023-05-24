@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Configuration;
 using System.Reflection;
-using Utils.Application;
+using Utils.Application.Configurations;
 using Utils.Infrastructure.Extensions;
 using Utils.Persistence.Contexts;
 using Utils.Persistence.Extensions;
@@ -17,7 +17,7 @@ namespace Utils.WebAPI.Configurations
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddApplicationServices()
+            services.ConfigureServiceDi()
                 .AddPersistence(connectionString, typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name)
                 .AddDateTimeProvider()
                 .AddBackgroundService()
@@ -26,8 +26,7 @@ namespace Utils.WebAPI.Configurations
 
         private static void ConfigureOthers(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureAuthorization(configuration);
-            services.AddTransient<IAuthorizationHandler, CustomIAuthorizationHandler>();
+            services.ConfigureAuthentication(configuration);
         }
     }
 }

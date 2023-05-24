@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Utils.CrossCuttingConcerns.Extensions;
+using Utils.WebAPI.Extensions;
 
 namespace Utils.WebAPI.Controllers
 {

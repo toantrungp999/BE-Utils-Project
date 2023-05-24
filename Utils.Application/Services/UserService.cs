@@ -20,17 +20,17 @@ namespace Utils.Application.Services
         private readonly IUnitOfWork _uowProvider;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        private readonly AppSetting _appSettings;
+        private readonly IOptionsMonitor<AppSettings> _optionsDelegate;
 
         public UserService(IUnitOfWork uowProvider,
             IMapper mapper,
             IUserRepository userRepository,
-            IOptions<AppSetting> appSettings)
+            IOptionsMonitor<AppSettings> optionsDelegate)
         {
             _uowProvider = uowProvider;
             _mapper = mapper;
             _userRepository = userRepository;
-            _appSettings = appSettings.Value;
+            _optionsDelegate = optionsDelegate;
         }
 
         public UserResponsesDto GetUserById(Guid userId)
@@ -52,9 +52,9 @@ namespace Utils.Application.Services
 
         public AuthenticateResponsesDto Authenticate(AuthenticateRequestDto authenticateRequest)
         {
-
+            var userName = authenticateRequest.Username.ToLower().Trim();
             var user = _userRepository.GetAll(true).FirstOrDefault(
-                           x => (x.UserName.ContainKeyWordInvariant(authenticateRequest.Username) || x.Email.ContainKeyWordInvariant(authenticateRequest.Username))
+                           x => (x.UserName.ToLower().Equals(userName) || x.Email.ToLower().Equals(userName))
                             && x.Password == authenticateRequest.Password.ConvertToMD5());
 
             Guard.ThrowIfNull<NotFoundException>(user, ExceptionConstant.LoginFail);
@@ -67,7 +67,7 @@ namespace Utils.Application.Services
                   new Claim(ClaimTypes.Role, user.Role)
             });
 
-            var jwtToken = JwtToken.GenerateToken(_appSettings.Secret, claims);
+            var jwtToken = JwtToken.GenerateToken(_optionsDelegate.CurrentValue.Secret, claims);
 
             AuthenticateResponsesDto result = _mapper.Map<AuthenticateResponsesDto>(user);
 
@@ -78,20 +78,20 @@ namespace Utils.Application.Services
 
         public async Task<Guid> InsertUser(InsertUserRequestDto request)
         {
-            var userByUserName = _userRepository.GetAll(true).FirstOrDefault(
-                            x => x.UserName.ContainKeyWordInvariant(request.Username));
+            var existUser = _userRepository.GetAll(true).FirstOrDefault(
+                x => x.UserName.ToLower().Equals(request.Username.ToLower()) ||
+                x.Email.ToLower().Equals(request.Email.ToLower()) ||
+                x.PhoneNumber.ToLower().Equals(request.PhoneNumber.ToLower()));
 
-            Guard.ThrowByCondition<BusinessLogicException>(userByUserName != null, ExceptionConstant.UserNameExist);
-
-            var userByEmail = _userRepository.GetAll(true).FirstOrDefault(
-                           x => x.Email.ContainKeyWordInvariant(request.Email));
-
-            Guard.ThrowByCondition<BusinessLogicException>(userByEmail != null, ExceptionConstant.EmailExist);
-
-            var userByPhoneNumber = _userRepository.GetAll(true).FirstOrDefault(
-                           x => x.PhoneNumber.ContainKeyWordInvariant(request.PhoneNumber));
-
-            Guard.ThrowByCondition<BusinessLogicException>(userByPhoneNumber != null, ExceptionConstant.PhoneNumberExist);
+            Guard.ThrowByCondition<BusinessLogicException>(
+                existUser != null && existUser.UserName.ContainKeyWordInvariant(request.Username),
+                ExceptionConstant.UserNameExist);
+            Guard.ThrowByCondition<BusinessLogicException>(
+                existUser != null && existUser.Email.ContainKeyWordInvariant(request.Email),
+                ExceptionConstant.EmailExist);
+            Guard.ThrowByCondition<BusinessLogicException>(
+                existUser != null && existUser.PhoneNumber.ContainKeyWordInvariant(request.PhoneNumber),
+                ExceptionConstant.PhoneNumberExist);
 
             var entity = new User
             {
@@ -108,5 +108,16 @@ namespace Utils.Application.Services
 
             return entity.Id;
         }
+
+    //    ExpressionStarter<User> FindUserByInfomation(string userName, string email, string phoneNumber)
+    //    {
+    //        var filterStatusPredicate = PredicateBuilder.New<User>();
+
+    //        filterStatusPredicate.Or(x => x.UserName.ContainKeyWordInvariant(userName));
+    //        filterStatusPredicate.Or(x => x.Email.ContainKeyWordInvariant(email));
+    //        filterStatusPredicate.Or(x => x.PhoneNumber.ContainKeyWordInvariant(phoneNumber));
+
+    //        return filterStatusPredicate;
+    //    }
     }
 }
