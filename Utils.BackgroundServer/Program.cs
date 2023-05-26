@@ -1,5 +1,4 @@
-﻿using Utils.BackgroundServer.ConfigurationOptions;
-using Utils.BackgroundServer.HostedServices;
+﻿using Utils.BackgroundServer.HostedServices;
 using Utils.Infrastructure.Extensions;
 using Utils.Persistence.Extensions;
 using Microsoft.Extensions.Configuration;
