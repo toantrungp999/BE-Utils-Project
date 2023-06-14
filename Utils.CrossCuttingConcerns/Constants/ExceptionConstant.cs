@@ -13,5 +13,7 @@
         public const string RestrictedResource = "Cannot access authorized resource!";
 
         public const string NotFound = "{0} cannot be found!";
+
+        public const string RoleNotExist = "Role {0} not exist";
     }
 }

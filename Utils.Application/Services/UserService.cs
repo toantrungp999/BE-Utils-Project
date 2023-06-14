@@ -109,15 +109,48 @@ namespace Utils.Application.Services
             return entity.Id;
         }
 
-    //    ExpressionStarter<User> FindUserByInfomation(string userName, string email, string phoneNumber)
-    //    {
-    //        var filterStatusPredicate = PredicateBuilder.New<User>();
+        public async Task<Guid> UpdateUserInfo(Guid userId, UpdateUserRequestDto request)
+        {
+            var user = _userRepository.GetAll().FirstOrDefault(
+                user => user.Id == userId
+                && user.Password == request.Password.ConvertToMD5());
 
-    //        filterStatusPredicate.Or(x => x.UserName.ContainKeyWordInvariant(userName));
-    //        filterStatusPredicate.Or(x => x.Email.ContainKeyWordInvariant(email));
-    //        filterStatusPredicate.Or(x => x.PhoneNumber.ContainKeyWordInvariant(phoneNumber));
+            Guard.ThrowIfNull<NotFoundException>(user, string.Format(ExceptionConstant.NotFound, nameof(User)));
 
-    //        return filterStatusPredicate;
-    //    }
+            user.Name = request.Name;
+            user.Email = request.Email;
+            user.PhoneNumber = request.PhoneNumber;
+            user.Sex = request.Sex;
+
+            await _uowProvider.SaveChangesAsync();
+
+            return user.Id;
+        }
+
+        public async Task<Guid> UpdateUserRule(UpdateUserRuleRequestDto request)
+        {
+            var user = _userRepository.GetAll().FirstOrDefault(
+                user => user.Id == request.UserId);
+
+            Guard.ThrowIfNull<NotFoundException>(user, string.Format(ExceptionConstant.NotFound, nameof(User)));
+            Guard.ThrowByCondition<NotFoundException>(!RoleConstant.Roles.Contains(request.Role), string.Format(ExceptionConstant.RoleNotExist, request.Role));
+
+            user.Role = request.Role;
+
+            await _uowProvider.SaveChangesAsync();
+
+            return user.Id;
+        }
+
+        //    ExpressionStarter<User> FindUserByInfomation(string userName, string email, string phoneNumber)
+        //    {
+        //        var filterStatusPredicate = PredicateBuilder.New<User>();
+
+        //        filterStatusPredicate.Or(x => x.UserName.ContainKeyWordInvariant(userName));
+        //        filterStatusPredicate.Or(x => x.Email.ContainKeyWordInvariant(email));
+        //        filterStatusPredicate.Or(x => x.PhoneNumber.ContainKeyWordInvariant(phoneNumber));
+
+        //        return filterStatusPredicate;
+        //    }
     }
 }

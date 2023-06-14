@@ -17,14 +17,6 @@ namespace Utils.WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("UerInfo")]
-        public IActionResult GetUserById()
-        {
-            var result = _userService.GetUserById((Guid)UserId);
-
-            return Ok(result);
-        }
-
         [Authorize(Roles = RoleConstant.Admin)]
         [HttpGet]
         public IActionResult GetUsers([FromQuery] PaginationRequestDto paginationRequest)
@@ -53,6 +45,32 @@ namespace Utils.WebAPI.Controllers
             {
                 UserId = userId
             });
+        }
+
+        [HttpGet("UerInfo")]
+        public IActionResult GetUserById()
+        {
+            var result = _userService.GetUserById((Guid)UserId);
+
+            return Ok(result);
+        }
+
+        [HttpPut("UpdateUserInfo")]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserRequestDto request)
+        {
+            await _userService.UpdateUserInfo((Guid)UserId, request);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstant.Admin)]
+        [Authorize(Roles = RoleConstant.SuperAdmin)]
+        [HttpPut("UpdateUerRole")]
+        public async Task<IActionResult> UpdateUerRole([FromBody] UpdateUserRuleRequestDto request)
+        {
+            await _userService.UpdateUserRule( request);
+
+            return Ok();
         }
     }
 }

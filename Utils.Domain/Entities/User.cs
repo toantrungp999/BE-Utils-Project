@@ -30,6 +30,8 @@ namespace Utils.Domain.Entities
         [EmailAddress]
         public string Email { get; set; }
 
+        public string AvatarUrl { get; set; }
+
         [StringLength(450)]
         public string Role { get; set; } = RoleConstant.User;
 
